@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "MyApplication.h"
 #include <stdio.h>
 #include <gl_core_4_4.h>
 #include <GLFW/glfw3.h>
@@ -10,12 +10,23 @@ using glm::vec4;
 using glm::mat4;
 using namespace aie;
 
-bool Application::startup()
+MyApplication::MyApplication()
+{
+	//m_window = glfwCreateWindow(1280, 720, "Application", nullptr, nullptr);
+}
+
+MyApplication::~MyApplication()
+{
+	//delete m_window;
+}
+
+bool MyApplication::startup()
 {
 	if (glfwInit() == false)
 		return -1;
 
 	m_window = glfwCreateWindow(1280, 720, "Application", nullptr, nullptr);
+	
 
 	if (m_window == nullptr)
 		glfwTerminate(); return -2;
@@ -43,7 +54,7 @@ bool Application::startup()
 	glEnable(GL_DEPTH_TEST);
 }
 
-bool Application::update()
+bool MyApplication::update()
 {
 	while (glfwWindowShouldClose(m_window) == false && glfwGetKey(m_window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
 	{
@@ -73,18 +84,24 @@ bool Application::update()
 		glfwSwapBuffers(m_window);
 		glfwPollEvents();
 	}
+
+	return false;
 }
 
-void Application::draw()
+void MyApplication::draw()
 {
 	Gizmos::draw(m_projection * m_view);
 }
 
-void Application::shutdown()
+void MyApplication::shutdown()
 {
 	Gizmos::destroy();
 	glfwDestroyWindow(m_window);
-	//delete m_window;
 	glfwTerminate();
+}
+
+void MyApplication::run(const char* title, int width, int height, bool fullscreen)
+{
+
 }
 

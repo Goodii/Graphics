@@ -2,11 +2,11 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-class Application
+class MyApplication
 {
 public:
-	Application();
-	virtual ~Application();
+	MyApplication();
+	virtual ~MyApplication();
 
 	void run(const char* title, int width, int height, bool fullscreen);
 
@@ -17,7 +17,7 @@ public:
 
 protected:
 	bool m_gameRunning;
-	GLFWwindow* m_window;
+	struct GLFWwindow* m_window;
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
 };

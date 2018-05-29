@@ -1,9 +1,9 @@
 #pragma once
-#include "Application.h"
+#include "MyApplication.h"
 
 int main()
 {
-	Application* app = new Application();
+	MyApplication* app = new MyApplication();
 	if (app->startup() == true)
 	{
 		while (app->update() == true)
