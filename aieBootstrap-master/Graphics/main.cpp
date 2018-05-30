@@ -1,15 +1,10 @@
 #pragma once
-#include "MyApplication.h"
+#include "TestApplication.h"
 
 int main()
 {
-	MyApplication* app = new MyApplication();
-	if (app->startup() == true)
-	{
-		while (app->update() == true)
-			app->draw();
-		app->shutdown();
-	}
+	auto app = new TestApplication;
+	app->run("Graphics", 1280, 720, false);
 
 	delete app;
 	return 0;

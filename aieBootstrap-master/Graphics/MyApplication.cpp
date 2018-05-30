@@ -12,24 +12,24 @@ using namespace aie;
 
 MyApplication::MyApplication()
 {
-	//m_window = glfwCreateWindow(1280, 720, "Application", nullptr, nullptr);
+	m_gameRunning = true;
 }
 
 MyApplication::~MyApplication()
 {
-	//delete m_window;
+	
 }
 
-bool MyApplication::startup()
+bool MyApplication::createWindow(const char* title, int width, int height, bool fullscreen)
 {
+	//check if glfw lib initialises
 	if (glfwInit() == false)
-		return -1;
-
-	m_window = glfwCreateWindow(1280, 720, "Application", nullptr, nullptr);
-	
-
+		return false;
+	//create window
+	m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	//check for window
 	if (m_window == nullptr)
-		glfwTerminate(); return -2;
+		glfwTerminate(); return false;
 
 	glfwMakeContextCurrent(m_window);
 
@@ -37,7 +37,7 @@ bool MyApplication::startup()
 	{
 		glfwDestroyWindow(m_window);
 		glfwTerminate();
-		return -3;
+		return false;
 	}
 
 	//check gl version
@@ -45,63 +45,60 @@ bool MyApplication::startup()
 	auto minor = ogl_GetMinorVersion();
 	printf("GL: %i.%i\n", major, minor);
 
-	Gizmos::create(10000, 10000, 10000, 10000);
-	//set viewpoint
-	m_view = glm::lookAt(vec3(10, 10, 10), vec3(0), vec3(0, 1, 0));
-	m_projection = glm::perspective(glm::pi<float>() * 0.25f, 16 / 9.f, 0.1f, 1000.f);
-
-	glClearColor(0.35f, 0.35f, 0.35f, 1);
 	glEnable(GL_DEPTH_TEST);
+
+	return true;
 }
 
-bool MyApplication::update()
+void MyApplication::destroyWindow()
 {
-	while (glfwWindowShouldClose(m_window) == false && glfwGetKey(m_window, GLFW_KEY_ESCAPE) != GLFW_PRESS)
-	{
-		// updates every frame
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		Gizmos::clear();
-
-		Gizmos::addTransform(mat4(1));
-
-		vec4 white(1);
-		vec4 black(0, 0, 0, 1);
-
-		for (int i = 0; i < 21; ++i)
-		{
-			Gizmos::addLine(vec3(-10 + i, 0, 10),
-				vec3(-10 + i, 0, -10),
-				i == 10 ? white : black);
-
-			Gizmos::addLine(vec3(10, 0, -10 + i),
-				vec3(-10, 0, -10 + i),
-				i == 10 ? white : black);
-		}
-
-		draw();
-
-		glfwSwapBuffers(m_window);
-		glfwPollEvents();
-	}
-
-	return false;
-}
-
-void MyApplication::draw()
-{
-	Gizmos::draw(m_projection * m_view);
-}
-
-void MyApplication::shutdown()
-{
-	Gizmos::destroy();
 	glfwDestroyWindow(m_window);
 	glfwTerminate();
 }
 
+void MyApplication::setBackgroundColour(float r, float g, float b, float a)
+{
+	glClearColor(r, g, b, a);
+}
+
 void MyApplication::run(const char* title, int width, int height, bool fullscreen)
 {
+	//check for succesful window and startup
+	if (createWindow(title, width, height, fullscreen) && startup())
+	{
+		//time variables
+		double prevTime = glfwGetTime();
+		double currTime = 0;
+		double deltaTime = 0;
 
+		//while game is running loop
+		while (m_gameRunning)
+		{
+			//update deltatime
+			currTime = glfwGetTime();
+			deltaTime = currTime - prevTime;
+			prevTime = currTime;
+
+			//clears screen
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			//call update
+			update(deltaTime);
+
+			//call draw
+			draw();
+
+			glfwSwapBuffers(m_window);
+			glfwPollEvents();
+
+			//ensure game should still be running
+			m_gameRunning = m_gameRunning || glfwWindowShouldClose(m_window) == GLFW_TRUE;
+		}
+
+		//call shutdown
+		shutdown();
+		//destroy window
+		destroyWindow();
+	}
 }
 
