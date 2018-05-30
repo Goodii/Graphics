@@ -29,8 +29,10 @@ bool MyApplication::createWindow(const char* title, int width, int height, bool 
 	m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	//check for window
 	if (m_window == nullptr)
-		glfwTerminate(); return false;
-
+	{
+		glfwTerminate(); 
+		return false;
+	}
 	glfwMakeContextCurrent(m_window);
 
 	if (ogl_LoadFunctions() == ogl_LOAD_FAILED)
@@ -94,11 +96,17 @@ void MyApplication::run(const char* title, int width, int height, bool fullscree
 			//ensure game should still be running
 			m_gameRunning = m_gameRunning || glfwWindowShouldClose(m_window) == GLFW_TRUE;
 		}
-
-		//call shutdown
-		shutdown();
-		//destroy window
-		destroyWindow();
 	}
+	//call shutdown
+	shutdown();
+	//destroy window
+	destroyWindow();
+}
+
+void MyApplication::quit()
+{
+	m_gameRunning = false;
+	shutdown();
+	destroyWindow();
 }
 

@@ -13,7 +13,9 @@ public:
 	void shutdown();
 
 protected:
-	glm::vec4 m_view;
-	glm::vec4 m_projection;
+	glm::mat4 m_view;
+	glm::mat4 m_projection;
+
+	
 };
 

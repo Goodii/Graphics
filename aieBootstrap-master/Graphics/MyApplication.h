@@ -2,6 +2,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+struct GLFWindow;
+
 class MyApplication
 {
 public:
@@ -16,12 +18,11 @@ public:
 	virtual void shutdown() = 0;
 
 	void setBackgroundColour(float r, float g, float b, float a = 1.f);
+	void quit();
 
 protected:
 	bool m_gameRunning;
 	struct GLFWwindow* m_window;
-	glm::mat4 m_view;
-	glm::mat4 m_projection;
 
 	bool createWindow(const char* title, int width, int height, bool fullscreen);
 	void destroyWindow();
